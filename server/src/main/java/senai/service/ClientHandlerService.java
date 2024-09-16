@@ -1,20 +1,18 @@
-package senai.service.impl;
-
-import senai.service.IClientHandlerService;
+package senai.service;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class ClientHandlerServiceImpl extends Thread implements IClientHandlerService {
+public class ClientHandlerService extends Thread {
 
-    public static ArrayList<ClientHandlerServiceImpl> clientsHandlers = new ArrayList<>();
+    public static ArrayList<ClientHandlerService> clientsHandlers = new ArrayList<>();
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private String clientUsername;
 
-    public ClientHandlerServiceImpl(Socket socket) {
+    public ClientHandlerService(Socket socket) {
         try {
             this.socket = socket;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -43,14 +41,13 @@ public class ClientHandlerServiceImpl extends Thread implements IClientHandlerSe
     }
 
     public void broadcastMessage(String messageToSend) {
-        for (ClientHandlerServiceImpl clientHandler : clientsHandlers) {
+        for (ClientHandlerService clientHandler : clientsHandlers) {
             try {
                 if (!clientHandler.clientUsername.equals(clientUsername)) {
                     clientHandler.bufferedWriter.write(messageToSend);
                     clientHandler.bufferedWriter.newLine();
                     clientHandler.bufferedWriter.flush();
                 }
-
             } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
             }
