@@ -20,6 +20,7 @@ public class Server {
             System.out.println("Server started on port " + port);
             while (!serverSocket.isClosed()) {
                 Socket socket = serverSocket.accept();
+                System.out.println("A new cliente has connected");
                 ClientHandlerService clientHandler = new ClientHandlerService(socket);
                 Thread thread = new Thread(clientHandler);
                 thread.start();
